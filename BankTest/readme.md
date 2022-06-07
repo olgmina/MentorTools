@@ -1,113 +1,23 @@
-# Инструментарий для работы банком тестовых заданий в GIFT-формате
+# Инструментарий для работы банком тестовых заданий 
 
-## gift формат тестового задания
+## Система управления банком тестовых заданий в GIFT-формате
 
-`` :: имя вопроса :: текст вопроса {``
+1. Функция слияния файлов привязан к кнопке «Merge open GIFT files»
+2. Функция контроля версий включает Хранение информации о внесенных изменениях, нумерации версий название исходного файла с припиской версии в виде числа начиная с единицы и для  хранения используют папку с исходным файлом (управляется с панели VERSION CONTROL SYSTEM)
+3. Функция навигации по категориям заданий (управляется с панели NAVIGATION)
+4. Функция генерации задания по шаблону
+5.
 
-    ответы
-``}``
-``#комментарий для тестируемого``
+### Описание проекта
 
-_Между собой вопросы разделяются как минимум одной пустой строкой_
-
-Для деления по категориям испольуется:
-
-``$CATEGORY: категория/подкатегория/подподкатегория``
-
-### Служебные символы
-
-__~__ __:__ __{__ __=__ __}__ __#__  
-
-_В вопросах и ответах экранируются_ __\\__
-
-Текст вопроса (только) может быть в одном из форматов `moodle` (Moodle Auto-Format), `html` (HTML format), `plain`
-(Plain text format) and `markdown` (Markdown format). При необходимости указывается перед текстом вопроса как  ``[markdown]``
-
-### типы вопросов
-
-__множественный выбор__
-
-``Who's buried in Grant's tomb?{~Grant ~Jefferson =no one}`` 
-
-``Grant is {~buried =entombed ~living} in Grant's tomb.`` 
-
-``Japanese characters originally came from what country? {`` 
-`` ~India#Sorry. ``
-`` =China#Correct! ``
-`` ~Korea#Try again. ``
-`` ~Egypt#That’s not it.`` 
-``} ``
-
-``::Jesus' hometown::Jesus Christ was from { ``
-`` ~Jerusalem#This was an important city, but is wrong. ``
-`` ~%25%Bethlehem#He was born here, but not raised here. ``
-`` ~%50%Galilee#You need to be more specific. ``
-`` =Nazareth#Yes! That's right! ``
-``}``
-
-__короткие ответы__
-
-``o's buried in Grant's tomb?{=no one =nobody} ``
-
-``Two plus two equals {=four =4}. ``
-``Who's buried in Grant's tomb? { ``
-`` =no one#excellent answer!`` 
-`` =nobody#excellent answer! ``
-``} ``
-
-``::Jesus' hometown:: Jesus Christ was from { ``
-`` =Nazareth#Yes! That's right! ``
-`` =%75%Nazereth#Right, but misspelled. ``
-`` =%25%Bethlehem#He was born here, but not raised``
-``here. ``
-``}``
-
-__правильно-неправильно__
-
-``Grant is buried in Grant's tomb.{F} ``
-
-``The sun rises in the east.{TRUE} ``
-
-``Grant is buried in Grant's tomb.``
-
-__соотвествия__
-
-``Match the following countries with their corresponding capitals. { ``
-`` =Canada -> Ottawa ``
-`` =Italy -> Rome ``
-`` =Japan -> Tokyo ``
-`` =India -> New Delhi ``
-``}``
-
-__числовой__
-
-``When was Ulysses S. Grant born? {#1822} ``
-
-``What is the value of pi (to 3 decimal places)? ``
-``{#3.1415:0.0005}. ``
-
-``What is the value of pi (to 3 decimal places)? ``
-``{#3.141..3.142}. ``
-
-``When was Ulysses S. Grant born? {# ``
-`` =1822:0 ``
-`` =%50%1822:2 ``
-``} ``
-
-__множественный выбор__
-
-``What two people are entombed in Grant's tomb? { ``
-`` ~No one ``
-`` ~%50%Grant ``
-`` ~%50%Grant's wife`` 
-`` ~Grant's father ``
-``} ``
-
-``What two people are entombed in Grant's tomb? { ``
-`` ~%-50%No one`` 
-`` ~%50%Grant ``
-`` ~%50%Grant's wife ``
-`` ~%-50%Grant's father ``
-``} ``
-
-## Инструкция по установке
+### Инструкция по развертыванию системы управления банком тестовых заданий в GIFT-формате
+Для загрузки плагинов требуется выполнить следующие шаги:
+- Запустить Visual Studio Code.
+- Перейти в раздел ![Расширения](https://user-images.githubusercontent.com/65451923/172455201-f9e9f884-cf5a-4ea4-a06e-819124d1bf06.png)
+ в левом меню.
+- В поиске ввести «GIFT» и Найти нужные
+- Выбрать Navigation GIFT, GIFT files control и GIFT Template, или пакет расширений GIFT Extension Pack;![расширения](https://user-images.githubusercontent.com/65451923/172453171-381a6959-bf40-4d5f-b77f-1419438b841d.png) 
+- Скачать каждое расширение отдельно или паком все вместе. 
+- Перезапустить Visual Studio Code. 
+- Открыть вкладки «NAVIGATION» и «VERSION CONTROL SYSTEM» в левой части 
+![приложения.](https://user-images.githubusercontent.com/65451923/172454379-2b070a3a-b67f-4003-bfed-cac03cab52ba.png)
