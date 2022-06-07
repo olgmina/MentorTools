@@ -1,0 +1,65 @@
+{
+  "name": "navigationgift",
+	"displayName": "Navigation GIFT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Hoffu/navigationgift.git"
+	},
+	"description": "Extension for navigation through GIFT file",
+	"icon": "images/navigation-gift-logo.png",
+	"version": "0.0.1",
+	"publisher": "Hoffu",
+	"engines": {
+		"vscode": "^1.64.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onView:navigation"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "navigationgift.goToLine",
+				"title": "Go to line"
+			}
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "navigation",
+					"name": "Navigation"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+			  "view": "navigation",
+			  "contents": "Open file with gift format, please.\n[Open file](command:workbench.action.files.openFile)"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.64.0",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.0.0",
+		"@types/node": "14.x",
+		"@typescript-eslint/eslint-plugin": "^5.9.1",
+		"@typescript-eslint/parser": "^5.9.1",
+		"eslint": "^8.6.0",
+		"glob": "^7.2.0",
+		"mocha": "^9.1.3",
+		"typescript": "^4.5.4",
+		"@vscode/test-electron": "^2.0.3"
+	}
+}
