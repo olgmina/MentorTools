@@ -1,0 +1,74 @@
+<idea-plugin>
+  <id>com.ivan.trubnicov.dfd.plugin</id>
+  <name>DFDPlugin</name>
+  <version>2.0</version>
+  <vendor email="trubnicov_ivan1996@mail.ru">Ivan Trubnicov</vendor>
+
+<!--  <depends>com.intellij.modules.java</depends>-->
+  <description><![CDATA[
+      DFD generator framework port to Intellij Idea plugin
+    ]]></description>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+  on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+    <toolWindow id="DFD Code Generator"
+                icon="/icons/tool-window.png"
+                anchor="right"
+                factoryClass="com.dfd.plugin.generator.code.controller.DFDPluginToolWindowFactory">
+    </toolWindow>
+  </extensions>
+
+  <actions>
+    <action class="com.dfd.plugin.generator.code.controller.actions.GenerationCodeAction"
+            id="DFDPlugin.GenCode"
+            text="Generate code"
+            description="Generate code on your DFD diagram"
+            icon="/icons/tool-window.png">
+    </action>
+    <action class="com.dfd.plugin.generator.code.controller.actions.InputBlockCreatorAction"
+            id="DFDPlugin.InputBlock"
+            text="Input block"
+            description="Zoom in the class-diagram view"
+            icon="/icons/input.png">
+    </action>
+    <action class="com.dfd.plugin.generator.code.controller.actions.OutputBlockCreatorAction"
+            id="DFDPlugin.OutputBlock"
+            text="Output block"
+            description="Zoom in the class-diagram view"
+            icon="/icons/output.png">
+    </action>
+    <action class="com.dfd.plugin.generator.code.controller.actions.ProcessBlockCreatorAction"
+            id="DFDPlugin.ProcessBlock"
+            text="Process block"
+            description="Zoom in the class-diagram view"
+            icon="/icons/process.png">
+    </action>
+    <action class="com.dfd.plugin.generator.code.controller.actions.ExternalStorageBlockCreatorAction"
+            id="DFDPlugin.ExternalStorageBlock"
+            text="External storage"
+            description="Zoom in the class-diagram view"
+            icon="/icons/external_storage.png">
+    </action>
+
+    <group id="DFDPlugin.UI.Toolbar">
+      <reference ref="DFDPlugin.GenCode"/>
+      <separator/>
+      <reference ref="DFDPlugin.InputBlock"/>
+      <reference ref="DFDPlugin.OutputBlock"/>
+      <reference ref="DFDPlugin.ProcessBlock"/>
+      <reference ref="DFDPlugin.ExternalStorageBlock"/>
+    </group>
+
+  </actions>
+
+
+</idea-plugin>
