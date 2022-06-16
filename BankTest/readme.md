@@ -13,11 +13,15 @@
 ### Инструкция по развертыванию системы управления банком тестовых заданий в GIFT-формате
 Для загрузки плагинов требуется выполнить следующие шаги:
 - Запустить Visual Studio Code.
-- Перейти в раздел ![Расширения](https://user-images.githubusercontent.com/65451923/172455201-f9e9f884-cf5a-4ea4-a06e-819124d1bf06.png)
- в левом меню.
+- Перейти в раздел Расширения  в левом меню.
+![Расширения](https://user-images.githubusercontent.com/65451923/172455201-f9e9f884-cf5a-4ea4-a06e-819124d1bf06.png)
+ 
 - В поиске ввести «GIFT» и Найти нужные
 - Выбрать Navigation GIFT, GIFT files control и GIFT Template, или пакет расширений GIFT Extension Pack;![расширения](https://user-images.githubusercontent.com/65451923/172453171-381a6959-bf40-4d5f-b77f-1419438b841d.png) 
 - Скачать каждое расширение отдельно или паком все вместе. 
 - Перезапустить Visual Studio Code. 
 - Открыть вкладки «NAVIGATION» и «VERSION CONTROL SYSTEM» в левой части 
 ![приложения.](https://user-images.githubusercontent.com/65451923/172454379-2b070a3a-b67f-4003-bfed-cac03cab52ba.png)
+
+__Размещение на маркетплейс__[Весь пакет расширений](https://marketplace.visualstudio.com/items?itemName=Hoffu.gift-extensions-pack)
+
