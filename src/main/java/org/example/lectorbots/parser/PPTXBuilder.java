@@ -3,9 +3,12 @@ package org.example.lectorbots.parser;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.poi.sl.usermodel.Notes;
+import org.apache.poi.sl.usermodel.Sheet;
 import org.apache.poi.sl.usermodel.TextParagraph;
+import org.apache.poi.sl.usermodel.TextRun;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.example.lectorbots.HelloApplication;
 
 import java.awt.*;
@@ -90,13 +93,14 @@ public class PPTXBuilder implements Aggregate {
 
     public String toText(XSLFSlide slide){
         Notes notes = slide.getNotes();
-        List<TextParagraph> textParagraphs = notes.getTextParagraphs();
+        List<XSLFTextParagraph> textParagraphs = notes.getTextParagraphs();
         StringBuilder texts = new StringBuilder();
-        for (TextParagraph paragraph : textParagraphs) {
-            texts.append(paragraph.toString());
-            texts.append("/n");
-        }
-        return texts.toString();
+//       for (XSLFTextParagraph paragraph : textParagraphs) {
+ //           texts.append(paragraph.getText());
+           texts.append("/n");
+  //    }
+       // [[], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]вася], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]1]]
+        return textParagraphs.getFirst().getTextRuns().toString();
     }
 
 }
