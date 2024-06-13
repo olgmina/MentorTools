@@ -29,7 +29,7 @@ public class ViewSlades {
 
     private static final int THUMBNAIL_SIZE = 100;
 
-    private List<Image> slides = new ArrayList<>();
+
     private int currentSlideIndex = 0;
 
     private Iterator imgIter;
@@ -50,29 +50,28 @@ public class ViewSlades {
     private Button pencilButton;
     private Button textButton;
 
-    public ViewSlades(List<Image> slides, int currentSlideIndex) {
-        this.slides = slides;
-        this.currentSlideIndex = currentSlideIndex;
+    public ViewSlades() {
+
 
 
     }
 
     private void  updateThumbnails(){
-        currentSlideImageView.setImage(pptxBuild.toImage(currentSlide));
+        currentSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent())));
         currentSlideImageView.setFitWidth(HelloApplication.SLIDE_WIDTH);
         currentSlideImageView.setFitHeight(HelloApplication.SLIDE_HEIGHT);
         currentSlideImageView.setPreserveRatio(true);
         notesArea.setText(pptxBuild.toText(currentSlide));
 
-        previousSlideImageView .setImage(slides.get((currentSlideIndex - 1 + slides.size()) % slides.size()));
+        previousSlideImageView .setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()-1)));
         previousSlideImageView.setFitWidth(THUMBNAIL_SIZE);
         previousSlideImageView.setFitHeight(THUMBNAIL_SIZE);
-        previousSlideImageView.setPreserveRatio(true);
+       // previousSlideImageView.setPreserveRatio(true);
 
-  //      nextSlideImageView .setImage(slides.get((currentSlideIndex + 1) % slides.size()));
+        nextSlideImageView .setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()+1)));
         nextSlideImageView.setFitWidth(THUMBNAIL_SIZE);
         nextSlideImageView.setFitHeight(THUMBNAIL_SIZE);
-        nextSlideImageView.setPreserveRatio(true);
+       // nextSlideImageView.setPreserveRatio(true);
     }
 
     public Pane viewpanel(){
@@ -98,13 +97,13 @@ public class ViewSlades {
 
         nextButton.setOnAction(e -> {
             imgIter.Next();
-            currentSlideIndex-=1;//( currentSlideIndex - 1 + slides.size()) % slides.size();
+            //( currentSlideIndex - 1 + slides.size()) % slides.size();
             updateThumbnails();
         });
 
         prevButton.setOnAction(e -> {
             imgIter.Prev();
-            currentSlideIndex+=1;//(currentSlideIndex + 1) % slides.size();
+            //(currentSlideIndex + 1) % slides.size();
             updateThumbnails();
         });
 
@@ -173,7 +172,6 @@ public class ViewSlades {
                 imgIter = pptxBuild.getIterator();
                 currentSlideIndex=0;
                 currentSlide =imgIter.getSlide(currentSlideIndex);
-
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

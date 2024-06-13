@@ -19,7 +19,7 @@ public class ViewController {
     private ViewChannels viewChannels;
     public ViewController() {
         //загрузка слайдов из стандартного пути
-        viewSlades = new ViewSlades(loadSlides("slides/example.pptx"),0);
+        viewSlades = new ViewSlades();
         // Подписки
         viewChannels=new ViewChannels();
         // Активности

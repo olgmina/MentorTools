@@ -14,7 +14,7 @@ public class SubscribeDAO implements ISubscribeDAO {
     public Subscribe[] getAllSubscribeKey() {
         ArrayList<Subscribe> keys = new ArrayList<Subscribe>();
         try {
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
             try {
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM subscribe");
@@ -43,11 +43,11 @@ public class SubscribeDAO implements ISubscribeDAO {
     public ArrayList<Subscribe> getAllSubscribe() {
         ArrayList<Subscribe> subscribe = new ArrayList<>();
         try {
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
 
             try {
                 Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT DISTINCT type FROM subscribe");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM Subscribe");
                 while (rs.next()) {
                     Subscribe type = new Subscribe(rs.getString("subscribe_type"), rs.getString("descriptor"));
                     subscribe.add(type);
@@ -66,7 +66,7 @@ public class SubscribeDAO implements ISubscribeDAO {
     @Override
     public void setSubscribeKey(Subscribe subscribe) {
         try {
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
             try {
                 PreparedStatement st = connection.prepareStatement("INSERT INTO subscribe (key, type) VALUES (?, ?)");
                 st.setString(1, subscribe.getSubscribeKey());

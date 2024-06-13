@@ -1,5 +1,7 @@
 package org.example.lectorbots.subcribe.database;
 
+import org.h2.jdbcx.JdbcDataSource;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,19 +9,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DataManager {
-    private static final String DB_URL = "jdbc:h2:mem:testdb";
+
+    private static final String DB_URL = "jdbc:h2:mem:testdb1";
     private static final String DB_USER = "test_admin";
     private static final String DB_PASSWORD = "1234567";
 
 
-    private static Connection connection;
+    private static  Connection connection = null;
 
+    static void createDatabase() {
 
-
-    public static void createDatabase() {
         try {
             // Check if database exists
-            if (connection == null || connection.isClosed()) {
+            if (connection == null) {
                 connection = createDataSource().getConnection();
                 // Create tables if database is new
                 Statement stmt = connection.createStatement();
@@ -47,24 +49,30 @@ public class DataManager {
                         ");");
 
                 stmt.close();
+                System.out.println("бАЗА ИСОЗДАНИЕ");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error creating database: " + e.getMessage(), e);
         }
     }
 
-    public static DataSource createDataSource() {
+    public static  DataSource createDataSource() {
         try {
             Class.forName("org.h2.Driver");
-            return (DataSource) DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        } catch (ClassNotFoundException | SQLException e) {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            dataSource.setURL(DB_URL);
+            dataSource.setUser(DB_USER);
+            dataSource.setPassword(DB_PASSWORD);
+            System.out.println("бАЗА ИСТОЧНИК");
+            return dataSource;
+                    //DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException("Error creating data source: " + e.getMessage(), e);
         }
     }
 
 
-
-    public static void closeConnection() {
+    public void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
@@ -73,14 +81,13 @@ public class DataManager {
             throw new RuntimeException("Error closing database connection: " + e.getMessage(), e);
         }
     }
-    public static Connection getConnection() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = createDataSource().getConnection();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error connecting to database: " + e.getMessage(), e);
+
+
+    public  static Connection getConnection() {
+        if (connection == null) {
+            createDatabase();
         }
+
         return connection;
     }
 }

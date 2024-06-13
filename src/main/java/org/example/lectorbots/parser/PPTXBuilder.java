@@ -9,6 +9,7 @@ import org.apache.poi.sl.usermodel.TextRun;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
+import org.apache.poi.xslf.usermodel.XSLFTextRun;
 import org.example.lectorbots.HelloApplication;
 
 import java.awt.*;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +35,8 @@ public class PPTXBuilder implements Aggregate {
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     public Iterator getIterator() {
@@ -91,16 +95,23 @@ public class PPTXBuilder implements Aggregate {
         return image;
     }
 
-    public String toText(XSLFSlide slide){
+    public String toText(XSLFSlide slide) {
         Notes notes = slide.getNotes();
         List<XSLFTextParagraph> textParagraphs = notes.getTextParagraphs();
-        StringBuilder texts = new StringBuilder();
-//       for (XSLFTextParagraph paragraph : textParagraphs) {
- //           texts.append(paragraph.getText());
-           texts.append("/n");
-  //    }
-       // [[], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]вася], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]1]]
-        return textParagraphs.getFirst().getTextRuns().toString();
+        String text="";
+        List<XSLFTextRun> textRuns = textParagraphs.get(0).getTextRuns();
+        // Если список не пустой, то получаем текст первого текстового запуска
+        if (!textRuns.isEmpty()) {
+            text = textRuns.get(0).toString();
+            System.out.println("TEXT "+text); // Выведет "вася"
+
+        }
+        return  text;
+        // [[], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]вася], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]1]]
+        //return textParagraphs.getFirst().getTextRuns().toString();
+        //return textParagraphs.getFirst().toString();
+        //return textParagraphs.getFirst().getText();
+        //return textParagraphs.getFirst().getTextRuns().get(0).toString();
     }
 
 }

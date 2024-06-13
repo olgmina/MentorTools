@@ -17,7 +17,7 @@ public class AppUserDAO implements IAppUserDAO {
         ArrayList<AppUser> users = new ArrayList<>();
         try {
 
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
             try {
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM user_table");
@@ -56,7 +56,7 @@ public class AppUserDAO implements IAppUserDAO {
     public ArrayList<Long> getAllSubscribersIdByType(String type) {
         ArrayList<Long> usersId = new ArrayList<>();
         try {
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
             try {
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM user_table LEFT JOIN subscribe ON subscribe.user_id = user_table.telegram_user_id WHERE type = '" + type + "'");
@@ -77,7 +77,7 @@ public class AppUserDAO implements IAppUserDAO {
     @Override
     public void deleteUser(Long id) {
         try {
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
             try {
                 PreparedStatement st = connection.prepareStatement("DELETE FROM user_table WHERE telegram_user_id = ?");
                 st.setLong(1, id);
@@ -100,7 +100,7 @@ public class AppUserDAO implements IAppUserDAO {
     @Override
     public void updateUser(AppUser user) {
         try {
-            var connection = DataManager.createDataSource().getConnection();
+            var connection = DataManager.getConnection();
             try {
                 PreparedStatement st = connection.prepareStatement("UPDATE user_table SET first_name = '" + user.getFirstName() + "', last_name = '" + user.getLastName() + "' WHERE telegram_user_id = " + user.getTelegramUserId());
                 st.executeUpdate();
