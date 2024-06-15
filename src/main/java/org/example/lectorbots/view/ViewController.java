@@ -19,6 +19,7 @@ public class ViewController {
     private ViewSlades viewSlades;
     private ViewVisitors viewVisitors;
     private ViewChannels viewChannels;
+    private ViewActivities viewActivities;
     public ViewController() {
         ManagerBot getbot=new ManagerBot(TelegramBotFactory.BotType.SEND_IMAGE);
 
@@ -28,14 +29,16 @@ public class ViewController {
         // Подписки
         viewChannels=new ViewChannels();
         // Активности
+        viewActivities=new ViewActivities();
         // Участники
         viewVisitors=new ViewVisitors();
         // Создание TabPane и добавление вкладок
         Tab tab0 = new Tab("Слайды", viewSlades.viewpanel());
         Tab tab1 = new Tab("Участники", viewVisitors.getMainVBox());
         Tab tab2 = new Tab("Каналы", viewChannels.getRoot());
+        Tab tab3 = new Tab("Активности", viewActivities.getRoot());
 
-        tabPane.getTabs().addAll(tab0, tab1, tab2);
+        tabPane.getTabs().addAll(tab0, tab3, tab1, tab2);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     }
 
