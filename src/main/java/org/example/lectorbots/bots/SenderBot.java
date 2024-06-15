@@ -16,22 +16,35 @@ import java.io.IOException;
 
 public class SenderBot extends TelegramLongPollingBot {
     WritableImage image =null;
-    @Override
-    public String getBotUsername() {
-        return "LectionSWQuestionBot";
+
+    private String botToken;
+    private String botUsername;
+
+    public SenderBot(String botToken, String botUsername) {
+        this.botToken=botToken;
+        this.botUsername=botUsername;
     }
 
+
+
     @Override
+    public String getBotUsername() {
+        return botUsername;
+    }
+
     public String getBotToken() {
-        return "6165348160:AAHXc_ZzpxyAPLfgH9gfZnKS8BVlYihJlaU";
+        return botToken;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println("222");
         if(image ==null) return;
         sendImage(update.getMessage().getChatId());
+        System.out.println("БОТ");
     }
+
+
+
 
     public void setImage(WritableImage image){
         this.image=image;

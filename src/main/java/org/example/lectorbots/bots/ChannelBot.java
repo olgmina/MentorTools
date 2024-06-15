@@ -3,11 +3,11 @@ package org.example.lectorbots.bots;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class AdminBot extends TelegramLongPollingBot {
+public class ChannelBot extends TelegramLongPollingBot {
     private String botToken;
     private String botUsername;
 
-    public AdminBot(String botToken, String botUsername) {
+    public ChannelBot(String botToken, String botUsername) {
         this.botToken=botToken;
         this.botUsername=botUsername;
     }
@@ -23,8 +23,6 @@ public class AdminBot extends TelegramLongPollingBot {
     }
 
     public String getBotToken() {
-
         return botToken;
     }
 }
-

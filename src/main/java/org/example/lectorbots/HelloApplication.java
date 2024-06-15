@@ -7,6 +7,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.example.lectorbots.view.ViewController;
 import org.example.lectorbots.view.ViewSlades;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelloApplication extends Application {
-    public static final int SLIDE_WIDTH = 800;
-    public static final int SLIDE_HEIGHT = 600;
+    public static final int SLIDE_WIDTH = 500;
+    public static final int SLIDE_HEIGHT = 400;
+
     @Override
     public void start(Stage stage) throws IOException {
 
@@ -33,6 +39,6 @@ public class HelloApplication extends Application {
 
 
     public static void main(String[] args) {
-        launch();
+       launch();
     }
 }

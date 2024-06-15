@@ -3,6 +3,8 @@ package org.example.lectorbots.view;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
+import org.example.lectorbots.bots.ManagerBot;
+import org.example.lectorbots.bots.TelegramBotFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,8 +20,11 @@ public class ViewController {
     private ViewVisitors viewVisitors;
     private ViewChannels viewChannels;
     public ViewController() {
+        ManagerBot getbot=new ManagerBot(TelegramBotFactory.BotType.SEND_IMAGE);
+
+
         //загрузка слайдов из стандартного пути
-        viewSlades = new ViewSlades();
+        viewSlades = new ViewSlades(getbot.bot);
         // Подписки
         viewChannels=new ViewChannels();
         // Активности

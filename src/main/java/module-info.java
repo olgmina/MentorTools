@@ -5,10 +5,12 @@ module org.example.lectorbots {
 
     requires java.desktop;
     requires java.sql;
-    requires com.h2database;
+
     requires telegrambots;
     requires telegrambots.meta;
     requires org.apache.poi.ooxml;
+    requires com.h2database;
+    requires org.slf4j;
 
 
     opens org.example.lectorbots to javafx.fxml;
