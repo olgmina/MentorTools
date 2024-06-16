@@ -65,13 +65,14 @@ public class ReportDAO {
         return null;
     }
 
-    public List<Report> getAll() throws SQLException {
+    public List<Report> getAll()  {
         List<Report> reports = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(
+        try {
+            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(
                      "SELECT telegramName, userID, respose, idSlide, rating, question FROM report"
-             )) {
+             );
             while (resultSet.next()) {
                 reports.add(new Report(
                         resultSet.getString("telegramName"),
@@ -82,6 +83,8 @@ public class ReportDAO {
                         resultSet.getString("question")
                 ));
             }
+        } catch (SQLException e) {
+
         }
         return reports;
     }
@@ -114,7 +117,7 @@ public class ReportDAO {
 
     public void populateDatabase(int numReports) {
         Random random = new Random();
-        List<String> telegramNames = List.of("user1", "user2", "user3", "user4", "user5");
+        List<String> telegramNames = List.of("Вася", "Петя", "Женя", "Сережа", "Даня");
         List<String> answers = List.of("Ответ 1", "Ответ 2", "Ответ 3", "Ответ 4", "Ответ 5");
         List<String> questions = List.of("Вопрос 1", "Вопрос 2", "Вопрос 3", "Вопрос 4", "Вопрос 5");
 

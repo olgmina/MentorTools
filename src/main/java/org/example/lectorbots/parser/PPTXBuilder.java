@@ -94,17 +94,37 @@ public class PPTXBuilder implements Aggregate {
 
         Notes notes = slide.getNotes();
 
-        List<XSLFTextParagraph> textParagraphs = notes.getTextParagraphs();
-  //      List<XSLFTextParagraph> textRuns = textParagraphs;
-//         Если список не пустой, то получаем текст первого текстового запуска
+        List<List<XSLFTextParagraph>> textParagraphs = notes.getTextParagraphs();
+        List<XSLFShape> textShapes = notes.getShapes();
 
-        // [[], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]вася], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]1]]
+        String textshape="";
+        String text="";
+
+        for(XSLFShape prf: textShapes)
+            if (prf instanceof XSLFShape) {
+                textshape+=" "+prf.getShapeName();
+                }
+       System.out.println("111 "+textshape);
+
+        System.out.println("000 "+textParagraphs.toString());
+
+        for(List<XSLFTextParagraph> prf: textParagraphs)
+            if (prf instanceof List<XSLFTextParagraph>) {
+                for (XSLFTextParagraph pr_t : prf)
+                    if (pr_t instanceof XSLFTextParagraph) {
+                        List<XSLFTextRun> textRuns = pr_t.getTextRuns();
+                        for (XSLFTextRun tr : textRuns)
+                            if (tr instanceof XSLFTextRun) {
+                                text += tr.getRawText();
+                            }
+                    }
+                System.out.println("222 "+text);
+            }
+
+      // [[], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]вася], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]1]]
 
 
-        return textParagraphs.stream().toString();
-        //return textParagraphs.getFirst().toString();
-        //return textParagraphs.getFirst().getText();
-        //return textParagraphs.getFirst().getTextRuns().get(0).toString();
+        return text;
     }
 
 }

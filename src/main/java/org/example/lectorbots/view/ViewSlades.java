@@ -47,9 +47,9 @@ public class ViewSlades {
     private Button textButton;
 
     private SenderBot senderBot=null;
+    Logger logger = LoggerFactory.getLogger(ViewSlades.class);
 
     public ViewSlades(TelegramLongPollingBot bot) {
-        Logger logger = LoggerFactory.getLogger(ViewSlades.class);
         this.senderBot= (SenderBot) bot;
         try {
             pptxBuild = new PPTXBuilder("src/main/resources/slides/example.pptx");
@@ -57,8 +57,6 @@ public class ViewSlades {
             logger.error("СЛАЙДЫ: Не удалось загрузить из файла", e);
         }
         imgIter = pptxBuild.getIterator();
-
-        updateThumbnails();
 
     }
 
@@ -84,14 +82,12 @@ public class ViewSlades {
 
         senderBot.setImage(currentSlideImageView.snapshot(new SnapshotParameters(), null));
 
-        pptxBuild.toText(slide);
-
+        notesArea.setText( pptxBuild.toText(slide));
     }
 
     public Pane viewpanel(){
         // Создание панели инструментов
         FlowPane toolbar = (FlowPane) createToolbar();
-
 
         // Создание текстового чата
         TextArea chatArea = new TextArea();

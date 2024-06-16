@@ -1,11 +1,14 @@
 package org.example.lectorbots.activities;
 
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 public class Report {
     private String telegramName;
-    private long userID;
+    private LongProperty userID;
 
     private Answer respose; // другой тип для ответов теста
-    private int idSlide;
+    private Integer idSlide;
     private int rating;
     private String question;
 
@@ -17,7 +20,7 @@ public class Report {
 
     public Report(String telegramName, long userID, String respose, int idSlide, int rating, String question) {
         this.telegramName = telegramName;
-        this.userID = userID;
+        this.userID = new SimpleLongProperty(userID);
         this.respose =new Answer(respose);
         this.idSlide = idSlide;
         this.rating = rating;
@@ -48,7 +51,7 @@ public class Report {
         this.rating = rating;
     }
 
-    public int getIdSlide() {
+    public Integer getIdSlide() {
         return idSlide;
     }
 
@@ -64,11 +67,16 @@ public class Report {
         this.respose.set(respose);
     }
 
-    public long getUserID() {
-        return userID;
+    public Long getUserID() {
+        return userID.get();
     }
 
     public void setUserID(long userID) {
-        this.userID = userID;
+        this.userID.set(userID);
     }
+
+    public LongProperty getuserIDProperty() {
+        return userID;
+    }
+
 }

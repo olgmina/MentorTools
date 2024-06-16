@@ -22,14 +22,14 @@ public class ViewController {
     private ViewActivities viewActivities;
     public ViewController() {
         ManagerBot getbot=new ManagerBot(TelegramBotFactory.BotType.SEND_IMAGE);
-
+        ManagerBot getchannelbot=new ManagerBot(TelegramBotFactory.BotType.POLL_CHANNEL);
 
         //загрузка слайдов из стандартного пути
         viewSlades = new ViewSlades(getbot.bot);
         // Подписки
         viewChannels=new ViewChannels();
         // Активности
-        viewActivities=new ViewActivities();
+        viewActivities=new ViewActivities(getchannelbot.bot);
         // Участники
         viewVisitors=new ViewVisitors();
         // Создание TabPane и добавление вкладок
