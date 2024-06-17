@@ -1,10 +1,9 @@
 package org.example.lectorbots.view;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -12,27 +11,28 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import org.example.lectorbots.activities.Report;
 import org.example.lectorbots.activities.database.ReportDAO;
-import org.example.lectorbots.bots.ChannelBot;
-import org.example.lectorbots.bots.SenderBot;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ViewActivities {
+    private static final Logger log = LoggerFactory.getLogger(ViewActivities.class);
     private TableView<Report> tableView;
     private ObservableList<Report> data;
     private ReportDAO dao;
     private BorderPane root;
+    private StringConverter<Integer> toInt=new IntegerStringConverter();
 
-    private ChannelBot bot=null;
 
-    public ViewActivities(TelegramLongPollingBot bot) {
-        dao = new ReportDAO();
-        this.bot= (ChannelBot) bot;
-        ((ChannelBot) bot).setDatabase(dao);
+    public ViewActivities(ReportDAO db) {
+        this.dao=db;
+
         // Создаем таблицу
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
@@ -46,7 +46,7 @@ public class ViewActivities {
         userIDColumn.setCellValueFactory(new PropertyValueFactory<Report, Long>("userID"));
 
 
-        userIDColumn.setCellFactory(tc -> new TableCell<Report, Long>() {
+        /* userIDColumn.setCellFactory(tc -> new TableCell<Report, Long>() {
             @Override
             protected void updateItem(Long value, boolean empty) {
                 super.updateItem(value, empty);
@@ -56,7 +56,7 @@ public class ViewActivities {
                     setText(String.valueOf(value));
                 }
             }
-        });
+        });*/
 
 
         TableColumn<Report, String> answerColumn = new TableColumn<>("Answer");
@@ -70,7 +70,24 @@ public class ViewActivities {
            }
        });*/
         TableColumn<Report, Integer> ratingColumn = new TableColumn<>("Rating");
-     //  ratingColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getRating()));
+        ratingColumn.setMinWidth(15);//ширина
+      //  ratingColumn.setCellValueFactory(new PropertyValueFactory<Report, Integer>("rating"));
+
+        ratingColumn.setCellFactory(new Callback<TableColumn<Report, Integer>, TableCell<Report, Integer>>() {
+            @Override
+            public TableCell<Report, Integer> call(TableColumn<Report, Integer> param) {
+                return new TextFieldTableCell<>(toInt);
+            }
+        });
+        ratingColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Report, Integer>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Report, Integer> t) {
+                ((Report) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setRating(t.getNewValue());
+
+            }
+        });
 
         TableColumn<Report, String> questionColumn = new TableColumn<>("Question");
         questionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getQuestion()));
@@ -121,9 +138,10 @@ public class ViewActivities {
     // Загружаем все записи из базы данных
     private void loadReports() {
 
-            data.clear();
-            List<Report> reports = dao.getAll();
-            data.addAll(reports);
+        data.clear();
+        List<Report> reports = dao.getAll();
+        data.addAll(reports);
+       // tableView.setItems(data);
 
     }
 
@@ -131,10 +149,16 @@ public class ViewActivities {
     private void filterByTelegramName(String searchValue) {
         data.clear();
         List<Report> reports = dao.getAll();
-        data.addAll(reports); // Получаем все записи
+        data.addAll(reports);
+
+        // Получаем все записи
         if (!searchValue.isEmpty()) {
-            data.filtered(report -> report.getTelegramName().equals(searchValue));
+            for(Report a:reports)
+                if(!a.getTelegramName().equals(searchValue)) data.remove(a);
+
         }
+
+        //  tableView.setItems(data);
     }
 
     // по слайду выбрать вопросы
@@ -145,12 +169,13 @@ public class ViewActivities {
             if (!idSlide.isEmpty()) {
                 try {
                     int slideId = Integer.parseInt(idSlide);
-                    data.filtered(report -> report.getIdSlide() != slideId);
+                    for(Report a:reports)
+                        if(a.getIdSlide()!=slideId) data.remove(a);
                 } catch (NumberFormatException e) {
                     // Некорректный ID Slide
                 }
             }
-
+        tableView.setItems(data);
     }
 
     public BorderPane getRoot() {

@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.example.lectorbots.HelloApplication;
-import org.example.lectorbots.bots.SenderBot;
+import org.example.lectorbots.bots.AdminBot;
 import org.example.lectorbots.parser.Iterator;
 import org.example.lectorbots.parser.PPTXBuilder;
 import org.slf4j.Logger;
@@ -29,9 +29,8 @@ public class ViewSlades {
 
 
 
-    private Iterator imgIter;
-
-    private PPTXBuilder pptxBuild;
+    private Iterator imgIter=null;
+    private PPTXBuilder pptxBuild=null;
 
     private BorderPane root;
     // Компоненты для управления слайдами
@@ -46,46 +45,12 @@ public class ViewSlades {
     private Button pencilButton;
     private Button textButton;
 
-    private SenderBot senderBot=null;
+    private AdminBot senderBot=null;
     Logger logger = LoggerFactory.getLogger(ViewSlades.class);
 
     public ViewSlades(TelegramLongPollingBot bot) {
-        this.senderBot= (SenderBot) bot;
-        try {
-            pptxBuild = new PPTXBuilder("src/main/resources/slides/example.pptx");
-        } catch (FileNotFoundException e) {
-            logger.error("СЛАЙДЫ: Не удалось загрузить из файла", e);
-        }
-        imgIter = pptxBuild.getIterator();
+        this.senderBot= (AdminBot) bot;
 
-    }
-
-    private void  updateThumbnails(){
-        int index=imgIter.getCurrent();
-        XSLFSlide slide = imgIter.getSlide(index);
-
-        currentSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent())));
-        currentSlideImageView.setFitWidth(HelloApplication.SLIDE_WIDTH);
-        currentSlideImageView.setFitHeight(HelloApplication.SLIDE_HEIGHT);
-        currentSlideImageView.setPreserveRatio(true);
-
-
-        previousSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()-1)));
-        previousSlideImageView.setFitWidth(THUMBNAIL_SIZE);
-        previousSlideImageView.setFitHeight(THUMBNAIL_SIZE);
-        previousSlideImageView.setPreserveRatio(true);
-
-        nextSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()+1)));
-        nextSlideImageView.setFitWidth(THUMBNAIL_SIZE);
-        nextSlideImageView.setFitHeight(THUMBNAIL_SIZE);
-        // nextSlideImageView.setPreserveRatio(true);
-
-        senderBot.setImage(currentSlideImageView.snapshot(new SnapshotParameters(), null));
-
-        notesArea.setText( pptxBuild.toText(slide));
-    }
-
-    public Pane viewpanel(){
         // Создание панели инструментов
         FlowPane toolbar = (FlowPane) createToolbar();
 
@@ -120,8 +85,7 @@ public class ViewSlades {
         thumbnailPanel.getChildren().add(prevButton);
         Button fileButton= new Button("Файл");
         fileButton.setOnAction(event -> {
-            openPPTXFIle();
-            updateThumbnails();
+            chooserFile();
         });
         thumbnailPanel.getChildren().add(fileButton);
         thumbnailPanel.getChildren().add(nextButton);
@@ -139,6 +103,48 @@ public class ViewSlades {
         root.setRight(imagePanel);
         root.setBottom(notesArea);
 
+
+        try {
+            openPPTXFIle("src/main/resources/slides/example.pptx");
+        } catch (FileNotFoundException e) {
+            logger.error("СЛАЙДЫ: Не удалось загрузить из файла", e);
+        }
+
+    }
+
+
+
+    private void  updateThumbnails(){
+        if(imgIter==null) {
+            notesArea.setText("Не загружены слайды");
+            return;
+        }
+
+        int index=imgIter.getCurrent();
+        XSLFSlide slide = imgIter.getSlide(index);
+
+        currentSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent())));
+        currentSlideImageView.setFitWidth(HelloApplication.SLIDE_WIDTH);
+        currentSlideImageView.setFitHeight(HelloApplication.SLIDE_HEIGHT);
+        currentSlideImageView.setPreserveRatio(true);
+
+
+        previousSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()-1)));
+        previousSlideImageView.setFitWidth(THUMBNAIL_SIZE);
+        previousSlideImageView.setFitHeight(THUMBNAIL_SIZE);
+        previousSlideImageView.setPreserveRatio(true);
+
+        nextSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()+1)));
+        nextSlideImageView.setFitWidth(THUMBNAIL_SIZE);
+        nextSlideImageView.setFitHeight(THUMBNAIL_SIZE);
+        // nextSlideImageView.setPreserveRatio(true);
+
+        senderBot.setImage(currentSlideImageView.snapshot(new SnapshotParameters(), null));//иммено изображение, так как слайд может быть изменен
+
+        notesArea.setText( pptxBuild.toText(slide));
+    }
+
+    public Pane viewpanel(){
         return root;
     }
 
@@ -172,15 +178,14 @@ public class ViewSlades {
         return toolbar;
     }
 
-    private void openPPTXFIle(){
+    private void chooserFile(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PowerPoint Presentations", "*.pptx"));
         File selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
         if (selectedFile != null) {
             try {
-                pptxBuild = new PPTXBuilder(selectedFile.getAbsolutePath());
-                imgIter = pptxBuild.getIterator();
-                updateThumbnails();
+                openPPTXFIle (selectedFile.getAbsolutePath());
+
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -196,6 +201,13 @@ public class ViewSlades {
             alert.setContentText("Пожалуйста выберите файл");
             alert.showAndWait();
         }
+    }
+
+    private void openPPTXFIle(String file) throws FileNotFoundException {
+        pptxBuild = new PPTXBuilder(file);
+        imgIter = pptxBuild.getIterator();
+        senderBot.setCaption(pptxBuild.toCaption(imgIter.getSlide(imgIter.getCurrent())));
+        updateThumbnails();
     }
 
 }

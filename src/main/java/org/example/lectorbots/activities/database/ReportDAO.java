@@ -34,7 +34,7 @@ public class ReportDAO {
                      "INSERT INTO report (telegramName, userID, respose, idSlide, rating, question) VALUES (?, ?, ?, ?, ?, ?)"
              )) {
             statement.setString(1, report.getTelegramName());
-            statement.setLong(2, report.getUserID());
+            statement.setLong(2, report.getuserID());
             statement.setString(3, report.getRespose().toString());
             statement.setInt(4, report.getIdSlide());
             statement.setInt(5, report.getRating());
@@ -100,7 +100,7 @@ public class ReportDAO {
             statement.setInt(4, report.getIdSlide());
             statement.setInt(5, report.getRating());
             statement.setString(6, report.getQuestion());
-            statement.setLong(2, report.getUserID());//????
+            statement.setLong(2, report.getuserID());//????
             statement.executeUpdate();
         }
     }

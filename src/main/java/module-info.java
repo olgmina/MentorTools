@@ -1,4 +1,5 @@
 module org.example.lectorbots {
+    requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.swing;

@@ -137,4 +137,24 @@ public class AppUserDAO implements IAppUserDAO {
             e.printStackTrace();
         }
     }
+
+    public boolean isUserRegistered(long telegramUserId) {
+        try {
+            var connection = DataManager.getConnection();
+            try {
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM user_table  WHERE telegram_user_id ="+ telegramUserId);
+                while (rs.next()) {
+                    return true;
+                }
+                rs.close();
+                stmt.close();
+            } finally {
+                connection.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

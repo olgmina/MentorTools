@@ -104,11 +104,9 @@ public class PPTXBuilder implements Aggregate {
             if (prf instanceof XSLFShape) {
                 textshape+=" "+prf.getShapeName();
                 }
-       System.out.println("111 "+textshape);
+    //   System.out.println("111 "+textshape);
 
-        System.out.println("000 "+textParagraphs.toString());
-
-        for(List<XSLFTextParagraph> prf: textParagraphs)
+           for(List<XSLFTextParagraph> prf: textParagraphs)
             if (prf instanceof List<XSLFTextParagraph>) {
                 for (XSLFTextParagraph pr_t : prf)
                     if (pr_t instanceof XSLFTextParagraph) {
@@ -117,14 +115,19 @@ public class PPTXBuilder implements Aggregate {
                             if (tr instanceof XSLFTextRun) {
                                 text += tr.getRawText();
                             }
+                        text+="\n";
                     }
-                System.out.println("222 "+text);
+                text+="\n";
             }
 
-      // [[], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]вася], [[class org.apache.poi.xslf.usermodel.XSLFTextParagraph]1]]
-
-
-        return text;
+       return text;
     }
 
+    public String toCaption(XSLFSlide slide){
+        String name ="";
+        name=slide.getSlideName();
+        if(name.isEmpty())
+            name="Слайд "+slide.getSlideNumber();
+        return name;
+    }
 }
