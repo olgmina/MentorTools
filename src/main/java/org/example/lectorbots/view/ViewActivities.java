@@ -1,6 +1,10 @@
 package org.example.lectorbots.view;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -43,56 +47,25 @@ public class ViewActivities {
         telegramNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTelegramName()));
 
         TableColumn<Report, Long> userIDColumn = new TableColumn<>("User ID");
-        userIDColumn.setCellValueFactory(new PropertyValueFactory<Report, Long>("userID"));
-
-
-        /* userIDColumn.setCellFactory(tc -> new TableCell<Report, Long>() {
-            @Override
-            protected void updateItem(Long value, boolean empty) {
-                super.updateItem(value, empty);
-                if (value == null || empty) {
-                    setText("");
-                } else {
-                    setText(String.valueOf(value));
-                }
-            }
-        });*/
-
+        userIDColumn.setCellValueFactory(cellData->cellData.getValue().userIDProperty().asObject());
 
         TableColumn<Report, String> answerColumn = new TableColumn<>("Answer");
         answerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRespose()));
 
         TableColumn<Report, Integer> idSlideColumn = new TableColumn<>("ID Slide");
-        /*idSlideColumn.setCellValueFactory(new Callback<CellDataFeatures<Report, String>, ObservableValue<String>>() {
-           public ObservableValue<String> call(CellDataFeatures<Report, String> p) {
-               // p.getValue() returns the Report instance for a particular TableView row
-               return p.getValue().firstNameProperty();
-           }
-       });*/
+        idSlideColumn.setCellValueFactory(cellData -> cellData.getValue().idSlideProperty().asObject());
+
         TableColumn<Report, Integer> ratingColumn = new TableColumn<>("Rating");
         ratingColumn.setMinWidth(15);//ширина
-      //  ratingColumn.setCellValueFactory(new PropertyValueFactory<Report, Integer>("rating"));
-
-        ratingColumn.setCellFactory(new Callback<TableColumn<Report, Integer>, TableCell<Report, Integer>>() {
-            @Override
-            public TableCell<Report, Integer> call(TableColumn<Report, Integer> param) {
-                return new TextFieldTableCell<>(toInt);
-            }
-        });
-        ratingColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Report, Integer>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<Report, Integer> t) {
-                ((Report) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                ).setRating(t.getNewValue());
-
-            }
-        });
+        ratingColumn.setCellValueFactory(cellData -> cellData.getValue().getratingProperty().asObject());
 
         TableColumn<Report, String> questionColumn = new TableColumn<>("Question");
         questionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getQuestion()));
 
         tableView.getColumns().addAll(telegramNameColumn, userIDColumn, answerColumn, idSlideColumn, ratingColumn, questionColumn);
+
+
+
 
         // Создаем поля с кнопками фильтрации
         TextField telegramNameFilter = new TextField();
@@ -102,6 +75,10 @@ public class ViewActivities {
         TextField userIDFilter = new TextField();
         Button userIDFilterButton = new Button("Filter");
         userIDFilterButton.setOnAction(e -> filterByIdSlide(userIDFilter.getText()));
+
+        TextField answerFilter = new TextField();
+        Button answerButton = new Button("Filter");
+        answerButton.setOnAction(e -> filterByAnswer(answerFilter.getText()));
 
         Button loadButton = new Button("Загрузить все");
         loadButton.setOnAction(e->loadReports());
@@ -117,11 +94,18 @@ public class ViewActivities {
                 new HBox(10, telegramNameFilter, telegramNameFilterButton),
                 new Label("Фильтровать по слайдам:"),
                 new HBox(10, userIDFilter, userIDFilterButton),
+                new Label("Фильтровать по ответам:"),
+                new HBox(10, answerFilter, answerButton),
                 statisticaButton,
                 loadButton
                 
         );
-
+        tableView.setOnMouseClicked(mouseEvent -> {
+            int i=tableView.getSelectionModel().getSelectedIndex();
+            answerFilter.setText(data.get(i).getRespose());
+            telegramNameFilter.setText(data.get(i).getTelegramName());
+            userIDFilter.setText(""+data.get(i).getuserID());
+        });
         // Добавляем элементы в Scene
         root = new BorderPane();
         root.setCenter(tableView);
@@ -141,7 +125,6 @@ public class ViewActivities {
         data.clear();
         List<Report> reports = dao.getAll();
         data.addAll(reports);
-       // tableView.setItems(data);
 
     }
 
@@ -158,7 +141,6 @@ public class ViewActivities {
 
         }
 
-        //  tableView.setItems(data);
     }
 
     // по слайду выбрать вопросы
@@ -175,7 +157,20 @@ public class ViewActivities {
                     // Некорректный ID Slide
                 }
             }
-        tableView.setItems(data);
+
+    }
+
+    private void filterByAnswer(String answer) {
+        data.clear();
+        List<Report> reports = dao.getAll();
+        data.addAll(reports);
+        // Получаем все записи
+        if (!answer.isEmpty()) {
+            for(Report a:reports)
+                if(!a.getTelegramName().equals(answer)) data.remove(a);
+
+        }
+
     }
 
     public BorderPane getRoot() {

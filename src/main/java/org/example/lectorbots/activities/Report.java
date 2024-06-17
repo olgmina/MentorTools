@@ -9,21 +9,17 @@ public class Report {
     private SimpleLongProperty userID;
 
     private Answer respose; // другой тип для ответов теста
-    private Integer idSlide;
+    private SimpleIntegerProperty idSlide;
     private SimpleIntegerProperty rating;
     private String question;
 
-    public Report(String telegramName, int idSlide) {
-        this.telegramName = telegramName;
-        this.idSlide = idSlide;
-        respose =new Answer("");
-    }
+
 
     public Report(String telegramName, long userID, String respose, int idSlide, int rating, String question) {
         this.telegramName = telegramName;
         this.userID = new SimpleLongProperty(userID);
         this.respose =new Answer(respose);
-        this.idSlide = idSlide;
+        this.idSlide = new SimpleIntegerProperty(idSlide);
         this.rating = new SimpleIntegerProperty(rating);
         this.question = question;
     }
@@ -56,12 +52,16 @@ public class Report {
         return rating.get();
     }
 
-    public Integer getIdSlide() {
-        return idSlide;
+    public int getIdSlide() {
+        return idSlide.get();
     }
 
     public void setIdSlide(int idSlide) {
-        this.idSlide = idSlide;
+        this.idSlide.set(idSlide);
+    }
+
+    public SimpleIntegerProperty idSlideProperty() {
+        return idSlide;
     }
 
     public String getRespose() {
