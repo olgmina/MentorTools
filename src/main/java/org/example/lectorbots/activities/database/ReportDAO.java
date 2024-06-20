@@ -18,6 +18,7 @@ public class ReportDAO {
         Logger logger=LoggerFactory.getLogger(ReportDAO.class);
         // Создаем таблицу, если она еще не существует
         try {
+
             Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             Statement stmt = conn.createStatement();
             stmt.execute("CREATE TABLE IF NOT EXISTS report (ID INT AUTO_INCREMENT PRIMARY KEY, " +

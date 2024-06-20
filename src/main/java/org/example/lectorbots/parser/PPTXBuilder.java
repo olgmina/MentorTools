@@ -93,33 +93,35 @@ public class PPTXBuilder implements Aggregate {
     public String toText(XSLFSlide slide) {
 
         Notes notes = slide.getNotes();
+        String text = "";
+        if (notes!=null) {
+            List<List<XSLFTextParagraph>> textParagraphs = notes.getTextParagraphs();
+            List<XSLFShape> textShapes = notes.getShapes();
 
-        List<List<XSLFTextParagraph>> textParagraphs = notes.getTextParagraphs();
-        List<XSLFShape> textShapes = notes.getShapes();
+            String textshape = "";
 
-        String textshape="";
-        String text="";
 
-        for(XSLFShape prf: textShapes)
-            if (prf instanceof XSLFShape) {
-                textshape+=" "+prf.getShapeName();
+            for (XSLFShape prf : textShapes)
+                if (prf instanceof XSLFShape) {
+                    textshape += " " + prf.getShapeName();
                 }
-    //   System.out.println("111 "+textshape);
-
-           for(List<XSLFTextParagraph> prf: textParagraphs)
-            if (prf instanceof List<XSLFTextParagraph>) {
-                for (XSLFTextParagraph pr_t : prf)
-                    if (pr_t instanceof XSLFTextParagraph) {
-                        List<XSLFTextRun> textRuns = pr_t.getTextRuns();
-                        for (XSLFTextRun tr : textRuns)
-                            if (tr instanceof XSLFTextRun) {
-                                text += tr.getRawText();
-                            }
-                        text+="\n";
-                    }
-                text+="\n";
-            }
-
+            //   System.out.println("111 "+textshape);
+            boolean flag = false;
+            for (List<XSLFTextParagraph> prf : textParagraphs)
+                if (prf instanceof List<XSLFTextParagraph>) {
+                    for (XSLFTextParagraph pr_t : prf)
+                        if (pr_t instanceof XSLFTextParagraph) {
+                            List<XSLFTextRun> textRuns = pr_t.getTextRuns();
+                            for (XSLFTextRun tr : textRuns)
+                                if (tr instanceof XSLFTextRun) {
+                                    if (flag) text += tr.getRawText();
+                                }
+                            if (!flag) flag = true;
+                            else text += "\n";
+                        }
+                    text += "\n";
+                }
+        }
        return text;
     }
 
@@ -130,4 +132,5 @@ public class PPTXBuilder implements Aggregate {
             name="Слайд "+slide.getSlideNumber();
         return name;
     }
+
 }

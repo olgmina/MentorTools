@@ -1,6 +1,14 @@
 package org.example.lectorbots.view;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -10,9 +18,15 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.example.lectorbots.HelloApplication;
+import org.example.lectorbots.activities.Report;
+import org.example.lectorbots.activities.database.ReportDAO;
 import org.example.lectorbots.bots.AdminBot;
 import org.example.lectorbots.parser.Iterator;
 import org.example.lectorbots.parser.PPTXBuilder;
+import org.example.lectorbots.view.pens.MPlus;
+import org.example.lectorbots.view.pens.MPoint;
+import org.example.lectorbots.view.pens.MRectangle;
+import org.example.lectorbots.view.pens.MRing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -20,6 +34,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ViewSlades {
@@ -28,22 +44,27 @@ public class ViewSlades {
 
 
 
-
+    private MPoint curpen=null;
     private Iterator imgIter=null;
     private PPTXBuilder pptxBuild=null;
 
     private BorderPane root;
     // Компоненты для управления слайдами
-    private ImageView currentSlideImageView=new ImageView();
+    private Canvas currentSlideView=new Canvas(600, 400);
 
+
+    // панель навигации по слайдам
     private ImageView previousSlideImageView=new ImageView();
     private ImageView nextSlideImageView=new ImageView();
+    //заметки к слайдам
     private TextArea notesArea;
     // Компоненты для панели инструментов
     private ColorPicker colorPicker;
     private Slider lineWidthSlider;
     private Button pencilButton;
     private Button textButton;
+    // чат
+    TextArea chatArea;
 
     private AdminBot senderBot=null;
     Logger logger = LoggerFactory.getLogger(ViewSlades.class);
@@ -55,7 +76,7 @@ public class ViewSlades {
         FlowPane toolbar = (FlowPane) createToolbar();
 
         // Создание текстового чата
-        TextArea chatArea = new TextArea();
+        chatArea = new TextArea();
         chatArea.setEditable(false);
 
         // Создание поля для заметок
@@ -83,6 +104,7 @@ public class ViewSlades {
         });
 
         thumbnailPanel.getChildren().add(prevButton);
+
         Button fileButton= new Button("Файл");
         fileButton.setOnAction(event -> {
             chooserFile();
@@ -93,15 +115,55 @@ public class ViewSlades {
         imagePanel.getChildren().add(thumbnailPanel);
         imagePanel.getChildren().add(nextSlideImageView);
 
+        //Панель с изображением для рисования
+        currentSlideView.setOnMousePressed(e->{
+
+             if(curpen!=null){
+                currentSlideView.setCursor(getPenView());
+                return;
+            }
+        });
+
+        currentSlideView.setOnMouseDragged(e->{
+            if(curpen!=null) {
+                curpen.setX(e.getX());
+                curpen.setY(e.getY());
+                curpen.draw(currentSlideView.getGraphicsContext2D());
+            }
+
+        });
+
+        currentSlideView.setOnMouseReleased(e->{
+            currentSlideView.setCursor(Cursor.DEFAULT);
+            if(curpen!=null) {
+                curpen = null;
+
+            }
+
+        });
+
+
+
         // Создание основного layout'а
         root = new BorderPane();
-        root.setTop(toolbar);
-        root.setCenter(currentSlideImageView);
 
+        root.setTop(toolbar);
+
+        root.setAlignment(currentSlideView, Pos.TOP_LEFT);
+        root.setMargin(currentSlideView, new Insets(5,5,5,5));
+        root.setCenter(currentSlideView);
+
+        root.setAlignment(chatArea, Pos.TOP_LEFT);
+        root.setMargin(chatArea, new Insets(5,5,5,5));
         root.setLeft(chatArea);
         chatArea.setPrefColumnCount(15);
+
+        root.setAlignment(imagePanel, Pos.TOP_LEFT);
+        root.setMargin(imagePanel, new Insets(5,5,5,5));
         root.setRight(imagePanel);
+
         root.setBottom(notesArea);
+
 
 
         try {
@@ -110,6 +172,21 @@ public class ViewSlades {
             logger.error("СЛАЙДЫ: Не удалось загрузить из файла", e);
         }
 
+    }
+
+    private void updateChat(){
+        ReportDAO dao=senderBot.getDatabase();
+        if(dao!=null){
+        List<Report> reports = dao.getAll();
+        List<Report> data =new ArrayList<>();
+        data.addAll(reports);
+        String text="";
+        // Получаем все записи
+        for(Report a:reports)
+           if(a.getIdSlide()!=imgIter.getCurrent()) data.remove(a);
+        for(Report a:data)
+            text+=a.getQuestion()+"\n";
+        chatArea.setText(text);}
     }
 
 
@@ -123,10 +200,8 @@ public class ViewSlades {
         int index=imgIter.getCurrent();
         XSLFSlide slide = imgIter.getSlide(index);
 
-        currentSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent())));
-        currentSlideImageView.setFitWidth(HelloApplication.SLIDE_WIDTH);
-        currentSlideImageView.setFitHeight(HelloApplication.SLIDE_HEIGHT);
-        currentSlideImageView.setPreserveRatio(true);
+        currentSlideView.getGraphicsContext2D().clearRect(0,0, currentSlideView.getWidth(), currentSlideView.getHeight());
+        currentSlideView.getGraphicsContext2D().drawImage(pptxBuild.toImage(slide),1,1);
 
 
         previousSlideImageView.setImage(pptxBuild.toImage(imgIter.getSlide(imgIter.getCurrent()-1)));
@@ -139,9 +214,12 @@ public class ViewSlades {
         nextSlideImageView.setFitHeight(THUMBNAIL_SIZE);
         // nextSlideImageView.setPreserveRatio(true);
 
-        senderBot.setImage(currentSlideImageView.snapshot(new SnapshotParameters(), null));//иммено изображение, так как слайд может быть изменен
+        senderBot.setImage(currentSlideView.snapshot(new SnapshotParameters(), null));//иммено изображение, так как слайд может быть изменен
+        senderBot.setCaption(pptxBuild.toCaption(slide));
 
         notesArea.setText( pptxBuild.toText(slide));
+
+        updateChat();
     }
 
     public Pane viewpanel(){
@@ -161,11 +239,17 @@ public class ViewSlades {
         thicknessSlider.setMinorTickCount(1);
         toolbar.getChildren().add(thicknessSlider);
 
-        Button pencilButton= new Button("Карандаш");
-        pencilButton.setOnAction(event -> {
-            // Обработка события нажатия на кнопку карандаша
-            // Например, изменение курсора на карандаш или включение режима рисования
+        ListView<MPoint> pencilButton= new ListView<>();
+        pencilButton.setMaxHeight(20);
+        ObservableList<MPoint> pens=  FXCollections.observableArrayList();
+        pens.add(new MRectangle(1,1, Color.BLACK,3,5));
+        pens.add(new MRing(1,1, Color.BLACK,3));
+        pens.add(new MPlus(1,1, Color.BLACK,1,1,2,2));
+        pencilButton.setItems(pens);
+        pencilButton.setOnEditCommit(e->{
+            curpen=e.getNewValue();
         });
+        curpen=pens.get(0);
         toolbar.getChildren().add(pencilButton);
 
         Button textButton= new Button("Текст");
@@ -210,4 +294,15 @@ public class ViewSlades {
         updateThumbnails();
     }
 
+    public ImageCursor getPenView(){
+        if (curpen == null) return (ImageCursor) Cursor.DEFAULT;
+        Canvas canv = new Canvas();
+        canv.setWidth(10);
+        canv.setHeight(10);
+        curpen.setX(1);
+        curpen.setY(1);
+        curpen.draw(canv.getGraphicsContext2D());
+        ImageCursor cursor = new ImageCursor(canv.snapshot(null, null));
+        return cursor;
+    }
 }

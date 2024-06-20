@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8"?>
+
 
 
     <configuration debug="true">
@@ -10,7 +10,7 @@
             </encoder>
         </appender>
 
-        <logger name="ru.upread.javacourse" level="debug"/>
+        <logger name="lector-bot" level="debug"/>
 
         <root level="ERROR">
             <appender-ref ref="STDOUT" />

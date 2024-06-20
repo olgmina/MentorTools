@@ -54,6 +54,10 @@ public class AdminBot extends TelegramLongPollingBot {
         this.database = reportDAO;
     }
 
+    public ReportDAO getDatabase() {
+        return database;
+    }
+
     public void setImage(WritableImage image){
         this.image=image;
         index++;
@@ -69,7 +73,6 @@ public class AdminBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
-        System.out.println("1БОТ");
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
@@ -82,9 +85,9 @@ public class AdminBot extends TelegramLongPollingBot {
                 // Получаем текст сообщения
                 String response = message.getText();
                 // Получаем заголовок
-                String caption = message.getCaption();
+                String captionMessage = message.getCaption();
 
-            System.out.println("2БОТ");
+
 
                 if(response.startsWith("/")) {
                     sendImage(message.getChatId()); //отправка изображения
@@ -95,31 +98,30 @@ public class AdminBot extends TelegramLongPollingBot {
                     logger.info("База не подключена");
                     sendMessage.setText("Сообщение НЕ может быть сохранено!");
                 }
-        {
-            System.out.println("0БОТ");
+                else   {
+            logger.info(" БОТ интерпретирует сообщение как ответ");
             if (response.length() == 1 && response.matches("[1-5]")) {
-                System.out.println("4БОТ");
+
                 int rating = Integer.parseInt(response);
-                Report report = new Report(username, 1, "ответ", 4, rating, "");
+                Report report = new Report(username, 1, "ответ", index, rating, "");
                 try {
                     database.create(report);
                 } catch (SQLException e) {
                     logger.error("БД ОТВЕТОВ не работает " + e);
                 }
 
-                System.out.println("5БОТ");
                 sendMessage.setText("Оценка: '" + rating + "'\nУспешно сохранена");
             } else if (response.endsWith("?")) {
-                System.out.println("2БОТ");
-                Report report = new Report(username, 1, "ответ", 123, -1, response);
+
+                Report report = new Report(username, 1, "ответ", index, -1, response);
                 try {
                     database.create(report);
                 } catch (SQLException e) {
                     logger.error("БД ОТВЕТОВ не работает " + e);
                 }
-                System.out.println("3БОТ");
+
                 sendMessage.setText("Вопрос: '" + response + "'\nУспешно сохранён");
-            } else {
+            } else if(response.startsWith("_")){
                 Report report = new Report(username, 1, response, 789, -1, "");
                 try {
                     database.create(report);
@@ -128,11 +130,12 @@ public class AdminBot extends TelegramLongPollingBot {
                 }
 
                 sendMessage.setText("Ответ: '" + response + "'\nУспешно сохранён");
-            }
+               }
+            else  sendMessage.setText("Для получения слайда - '//' /n для вопроса - '?' в конце текста  ");
         }
         sender(sendMessage);
 
-        }
+    }
 
 
     private int extractNumber(String text) {
@@ -169,7 +172,7 @@ public class AdminBot extends TelegramLongPollingBot {
             SendPhoto sendPhoto = new SendPhoto();
             sendPhoto.setChatId(String.valueOf(chatId));
             sendPhoto.setPhoto(photo);
-            sendPhoto.setCaption("Слайд");
+            sendPhoto.setCaption(this.Caption);
             execute(sendPhoto);
 
         } catch ( TelegramApiException e) {

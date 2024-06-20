@@ -83,10 +83,15 @@ public class ViewActivities {
         Button loadButton = new Button("Загрузить все");
         loadButton.setOnAction(e->loadReports());
 
+        Label info=new Label();
         Button statisticaButton = new Button("Статистика");
-        statisticaButton.setOnAction(e->infoSlide());
+        statisticaButton.setOnAction(e-> {
+            infoSlide();
+            info.setText("Участников "+ data.size());
+        });
 
-        // Создаем layout для элементов
+
+         // Создаем layout для элементов
         VBox filterBox = new VBox(10);
         filterBox.setPadding(new Insets(10));
         filterBox.getChildren().addAll(
@@ -97,14 +102,16 @@ public class ViewActivities {
                 new Label("Фильтровать по ответам:"),
                 new HBox(10, answerFilter, answerButton),
                 statisticaButton,
-                loadButton
+                loadButton,
+                info
                 
         );
         tableView.setOnMouseClicked(mouseEvent -> {
             int i=tableView.getSelectionModel().getSelectedIndex();
+            if (i < 0 && i >= data.size()) return;
             answerFilter.setText(data.get(i).getRespose());
             telegramNameFilter.setText(data.get(i).getTelegramName());
-            userIDFilter.setText(""+data.get(i).getuserID());
+            userIDFilter.setText(""+data.get(i).getIdSlide());
         });
         // Добавляем элементы в Scene
         root = new BorderPane();
@@ -117,6 +124,8 @@ public class ViewActivities {
     }
 
     private void infoSlide() {
+       int size = data.size();
+
     }
 
     // Загружаем все записи из базы данных
@@ -167,8 +176,7 @@ public class ViewActivities {
         // Получаем все записи
         if (!answer.isEmpty()) {
             for(Report a:reports)
-                if(!a.getTelegramName().equals(answer)) data.remove(a);
-
+                if(!a.getRespose().equals(answer)) data.remove(a);
         }
 
     }
