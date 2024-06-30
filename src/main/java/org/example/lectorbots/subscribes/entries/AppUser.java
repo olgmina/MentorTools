@@ -8,6 +8,14 @@ public class AppUser {
     private String username;
     private Subscribe[] subscribe;
 
+    public AppUser(String firstName, String lastName, String username) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.id=0l;
+        this.telegramUserId=0l;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

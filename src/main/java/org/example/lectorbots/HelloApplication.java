@@ -23,12 +23,13 @@ import java.util.List;
 public class HelloApplication extends Application {
     public static final int SLIDE_WIDTH = 500;
     public static final int SLIDE_HEIGHT = 400;
+    private ViewController viewController;
 
     @Override
     public void start(Stage stage) throws IOException {
 
 
-        ViewController viewController = new ViewController();
+        viewController = new ViewController();
 
         Scene scene = new Scene(viewController.getTabPane(), SLIDE_WIDTH + 200, SLIDE_HEIGHT + 100);
         stage.setTitle("Presentation Panel");
@@ -40,5 +41,14 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) {
        launch();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // Закрываем соединение с БД
+
+
+        // Останавливаем бота
+        viewController.stopBot();
     }
 }

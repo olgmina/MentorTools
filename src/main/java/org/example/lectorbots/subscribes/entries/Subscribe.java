@@ -6,7 +6,7 @@ public class Subscribe {
     private int subscribe_id;
     private String subscribe_type;
     private String descriptor;
-    private String subscribe_key;
+
 
 
     public Subscribe(String subscribe_type, String descriptor) {
@@ -44,12 +44,5 @@ public class Subscribe {
         return descriptor;
     }
 
-    //ключи
-    public void setSubscribeKey(String subscribe_key) {
-        this.subscribe_key = subscribe_key;
-    }
-    public String getSubscribeKey() {
-        return this.subscribe_key;
-    }
 
 }

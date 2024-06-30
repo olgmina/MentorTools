@@ -2,7 +2,10 @@ package org.example.lectorbots.subcribe.database;
 
 
 
+import org.example.lectorbots.activities.database.ReportDAO;
 import org.h2.jdbcx.JdbcDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -15,7 +18,7 @@ public class DataManager {
     private static final String DB_URL = "jdbc:h2:mem:testdb1";
     private static final String DB_USER = "test_admin";
     private static final String DB_PASSWORD = "1234567";
-
+    private static Logger logger = LoggerFactory.getLogger(DataManager.class);
 
     private static  Connection connection = null;
 
@@ -24,7 +27,7 @@ public class DataManager {
         try {
             // Check if database exists
             if (connection == null) {
-                connection = createDataSource().getConnection();
+                connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
                 // Create tables if database is new
                 Statement stmt = connection.createStatement();
                 stmt.execute("CREATE TABLE AppUser (" +
@@ -38,11 +41,11 @@ public class DataManager {
                 stmt.execute("CREATE TABLE Subscribe (" +
                         "subscribe_id INT PRIMARY KEY AUTO_INCREMENT," +
                         "subscribe_type VARCHAR(255)," +
-                        "descriptor VARCHAR(255)," +
+                        "subscribe_descriptor VARCHAR(255)," +
                         "subscribe_key VARCHAR(255)" +
                         ");");
 
-                stmt.execute("CREATE TABLE AppUser_Subscribe (" +
+                stmt.execute("CREATE TABLE user_subscribe (" +
                         "appUserId BIGINT," +
                         "subscribeId INT," +
                         "PRIMARY KEY (appUserId, subscribeId)," +
@@ -50,28 +53,15 @@ public class DataManager {
                         "FOREIGN KEY (subscribeId) REFERENCES Subscribe(subscribe_id)" +
                         ");");
 
-                stmt.close();
-                System.out.println("бАЗА ИСОЗДАНИЕ");
+               // stmt.close();
+                logger.debug("бАЗА ПОЛЬЗОВАТЕЛИ-ПОДПИСКИ СОЗДАНИЕ");
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error creating database: " + e.getMessage(), e);
+            logger.error("Error creating database ПОЛЬЗОВАТЕЛИ-ПОДПИСКИ: " + e.getMessage(), e);
         }
     }
 
-    public static  DataSource createDataSource() {
-        try {
-            Class.forName("org.h2.Driver");
-            JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL(DB_URL);
-            dataSource.setUser(DB_USER);
-            dataSource.setPassword(DB_PASSWORD);
-            System.out.println("бАЗА ИСТОЧНИК");
-            return dataSource;
-                    //DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error creating data source: " + e.getMessage(), e);
-        }
-    }
+
 
 
     public void closeConnection() {
@@ -80,13 +70,14 @@ public class DataManager {
                 connection.close();
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error closing database connection: " + e.getMessage(), e);
+            logger.error("Error closing database connection ПОЛЬЗОВАТЕЛИ-ПОДПИСКИ:: " + e.getMessage(), e);
         }
     }
 
 
     public  static Connection getConnection() {
         if (connection == null) {
+            logger.error("12345");
             createDatabase();
         }
 

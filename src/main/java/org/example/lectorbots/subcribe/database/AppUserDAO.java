@@ -15,14 +15,12 @@ public class AppUserDAO implements IAppUserDAO {
     public ArrayList<AppUser> getAllSubscribers() {
 
         ArrayList<AppUser> users = new ArrayList<>();
-        try {
 
-            var connection = DataManager.getConnection();
-            try {
-                Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM user_table");
+        try {
+                Statement stmt = DataManager.getConnection().createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM AppUser");
                 while (rs.next()) {
-                    AppUser user = new AppUser();
+                    AppUser user = new AppUser("", "", "");
                     user.setId(rs.getLong("id"));
                     user.setTelegramUserId(rs.getLong("telegram_user_id"));
                     user.setFirstName(rs.getString("first_name"));
@@ -32,7 +30,7 @@ public class AppUserDAO implements IAppUserDAO {
                 }
                 rs.close();
                 for (AppUser user: users) {
-                    rs = stmt.executeQuery("SELECT * FROM subscribe WHERE user_id = " + user.getTelegramUserId());
+                    rs = stmt.executeQuery("SELECT * FROM Subscribe WHERE user_id = " + user.getTelegramUserId());
                     ArrayList<Subscribe> subs = new ArrayList<>();
                     while (rs.next()) {
                         Subscribe subscribe = new Subscribe("new", "");
@@ -43,9 +41,7 @@ public class AppUserDAO implements IAppUserDAO {
                     rs.close();
                 }
                 stmt.close();
-            } finally {
-                connection.close();
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,7 +55,7 @@ public class AppUserDAO implements IAppUserDAO {
             var connection = DataManager.getConnection();
             try {
                 Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM user_table LEFT JOIN subscribe ON subscribe.user_id = user_table.telegram_user_id WHERE type = '" + type + "'");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM AppUser LEFT JOIN Subscribe ON subscribe.user_id = user_table.telegram_user_id WHERE type = '" + type + "'");
                 while (rs.next()) {
                     usersId.add(rs.getLong("telegram_user_id"));
                 }
@@ -79,13 +75,13 @@ public class AppUserDAO implements IAppUserDAO {
         try {
             var connection = DataManager.getConnection();
             try {
-                PreparedStatement st = connection.prepareStatement("DELETE FROM user_table WHERE telegram_user_id = ?");
+                PreparedStatement st = connection.prepareStatement("DELETE FROM AppUser WHERE telegram_user_id = ?");
                 st.setLong(1, id);
                 st.executeUpdate();
                 st = connection.prepareStatement("DELETE FROM user_subscribe WHERE user_id = ?");
                 st.setLong(1, id);
                 st.executeUpdate();
-                st = connection.prepareStatement("DELETE FROM subscribe WHERE user_id = ?");
+                st = connection.prepareStatement("DELETE FROM Subscribe WHERE user_id = ?");
                 st.setLong(1, id);
                 st.executeUpdate();
                 st.close();
@@ -102,21 +98,21 @@ public class AppUserDAO implements IAppUserDAO {
         try {
             var connection = DataManager.getConnection();
             try {
-                PreparedStatement st = connection.prepareStatement("UPDATE user_table SET first_name = '" + user.getFirstName() + "', last_name = '" + user.getLastName() + "' WHERE telegram_user_id = " + user.getTelegramUserId());
+                PreparedStatement st = connection.prepareStatement("UPDATE AppUser SET first_name = '" + user.getFirstName() + "', last_name = '" + user.getLastName() + "' WHERE telegram_user_id = " + user.getTelegramUserId());
                 st.executeUpdate();
-                st = connection.prepareStatement("DELETE FROM subscribe WHERE user_id = " + user.getTelegramUserId());
+                st = connection.prepareStatement("DELETE FROM Subscribe WHERE user_id = " + user.getTelegramUserId());
                 st.executeUpdate();
                 st = connection.prepareStatement("DELETE FROM user_subscribe WHERE user_id = " + user.getTelegramUserId());
                 st.executeUpdate();
                 if (user.getSubscribe() != null) {
                     for (Subscribe sub: user.getSubscribe()) {
-                        st = connection.prepareStatement("INSERT INTO subscribe (type, user_id) VALUES (?, ?)");
+                        st = connection.prepareStatement("INSERT INTO Subscribe (type, user_id) VALUES (?, ?)");
                         st.setString(1, sub.getSubscribeType());
                         st.setLong(2, user.getTelegramUserId());
                         st.executeUpdate();
                     }
                     Statement stmt = connection.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM subscribe WHERE user_id = " + user.getTelegramUserId());
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM Subscribe WHERE user_id = " + user.getTelegramUserId());
                     ArrayList<Integer> idSubs = new ArrayList<>();
                     while (rs.next()) {
                         idSubs.add(rs.getInt("id"));
@@ -143,7 +139,7 @@ public class AppUserDAO implements IAppUserDAO {
             var connection = DataManager.getConnection();
             try {
                 Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM user_table  WHERE telegram_user_id ="+ telegramUserId);
+                ResultSet rs = stmt.executeQuery("SELECT * FROM AppUser  WHERE telegram_user_id ="+ telegramUserId);
                 while (rs.next()) {
                     return true;
                 }

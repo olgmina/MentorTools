@@ -230,6 +230,11 @@ public class ViewSlades {
         FlowPane toolbar = new FlowPane();
 
         ColorPicker colorPicker= new ColorPicker(Color.BLACK);
+        colorPicker.setOnAction(e->{
+            if (curpen != null) {
+                curpen.setColor(colorPicker.getValue());
+            }
+        });
         toolbar.getChildren().add(colorPicker);
 
         Slider thicknessSlider= new Slider(1, 10, 1);
@@ -240,16 +245,20 @@ public class ViewSlades {
         toolbar.getChildren().add(thicknessSlider);
 
         ListView<MPoint> pencilButton= new ListView<>();
-        pencilButton.setMaxHeight(20);
+        pencilButton.setMaxHeight(30);
         ObservableList<MPoint> pens=  FXCollections.observableArrayList();
         pens.add(new MRectangle(1,1, Color.BLACK,3,5));
         pens.add(new MRing(1,1, Color.BLACK,3));
         pens.add(new MPlus(1,1, Color.BLACK,1,1,2,2));
         pencilButton.setItems(pens);
-        pencilButton.setOnEditCommit(e->{
-            curpen=e.getNewValue();
+        pencilButton.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
+
+            curpen=newValue;
+            curpen.setColor(colorPicker.getValue());
+
         });
         curpen=pens.get(0);
+        curpen.setColor(colorPicker.getValue());
         toolbar.getChildren().add(pencilButton);
 
         Button textButton= new Button("Текст");

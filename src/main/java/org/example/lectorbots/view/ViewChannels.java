@@ -11,6 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.example.lectorbots.subscribes.entries.Subscribe;
 import org.example.lectorbots.subcribe.database.*;
+import org.example.lectorbots.subscribes.entries.SubscribeKey;
+
+import java.util.Random;
+
 import static org.apache.poi.poifs.crypt.CryptoFunctions.generateKey;
 
 public class ViewChannels {
@@ -40,7 +44,7 @@ public class ViewChannels {
         subscribeTable.getColumns().addAll(subscribeIdColumn, subscribeTypeColumn, descriptionColumn);
 
         // данные?
-        subscribeData.addAll(subscribeDAO.getAllSubscribe());
+        subscribeData.addAll(subscribeDAO.getAll());
         subscribeTable.getItems().addAll(subscribeData);
 
         // Добавление элементов управления
@@ -54,14 +58,16 @@ public class ViewChannels {
         deleteButton.setOnAction(event -> deleteSubscribe());
 
         Button editButton = new Button("Изменить");
+
         editButton.setOnAction(event -> editSubscribe());
 
         Button generateKeyButton = new Button("Сгенерировать ключ");
-        generateKeyButton.setOnAction(event -> generateKey());
+        TextField textField =new TextField("10");
+        generateKeyButton.setOnAction(event -> generateKey( Integer.parseInt(textField.getText())));
 
         // Размещение элементов управления
         controlsBox = new HBox(10);
-        controlsBox.getChildren().addAll(subscribeTypeField, descriptionField, addButton, deleteButton, editButton, generateKeyButton);
+        controlsBox.getChildren().addAll(subscribeTypeField, descriptionField, addButton, deleteButton, editButton, textField, generateKeyButton);
         controlsBox.setAlignment(Pos.CENTER);
 
         root = new VBox(10);
@@ -69,7 +75,22 @@ public class ViewChannels {
         root.setPadding(new Insets(10));
     }
 
-    private void generateKey() {
+    private void generateKey(int count) {
+        final int NUMBER =6;
+        String characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+        for (int i = 0; i < count; i++) {
+            StringBuilder sb = new StringBuilder(NUMBER);
+            Random random = new Random();
+            for (int j = 0; j < NUMBER; j++) {
+                int randomIndex = random.nextInt(characters.length());
+                sb.append(characters.charAt(randomIndex));
+            }
+            SubscribeKey subKey = new SubscribeKey();
+           // subKey.setSubscribeId(id);
+            subKey.setKey(sb.toString());
+           // SubscribeDAO.create(subKey);
+        }
+
     }
 
     private void editSubscribe() {

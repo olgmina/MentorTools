@@ -10,9 +10,9 @@
             </encoder>
         </appender>
 
-        <logger name="lector-bot" level="debug"/>
+        <logger name="lector-bot" level="info"/>
 
-        <root level="ERROR">
+        <root level="debug">
             <appender-ref ref="STDOUT" />
         </root>
 

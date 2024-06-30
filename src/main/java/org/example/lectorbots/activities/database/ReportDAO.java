@@ -10,22 +10,40 @@ import java.util.List;
 import java.util.Random;
 
 public class ReportDAO {
-    private static final String JDBC_URL = "jdbc:h2:mem:testdb"; // Замените на URL вашей БД H2
+    private static final String JDBC_URL = "jdbc:h2:file:/src/main/resources/datasource/activity"; // Замените на URL вашей БД H2
     private static final String USERNAME = "admin"; // Замените на имя пользователя вашей БД H2
     private static final String PASSWORD = "1234567"; // Замените на пароль вашей БД H2
+    Logger logger=LoggerFactory.getLogger(ReportDAO.class);
 
     public ReportDAO() {
-        Logger logger=LoggerFactory.getLogger(ReportDAO.class);
-        // Создаем таблицу, если она еще не существует
-        try {
 
+        try {
             Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE IF NOT EXISTS report (ID INT AUTO_INCREMENT PRIMARY KEY, " +
-                    "telegramName VARCHAR(255), userID BIGINT,respose VARCHAR(255), idSlide INT, RATING INT, QUESTION VARCHAR(255))");
-            populateDatabase(10);
+            // Выполняем запрос, который не вернет данные, если таблица существует.
+            // Если таблица существует, запрос будет завершен без ошибок.
+            stmt.execute("SELECT  FROM report WHERE 1=0");
+
+            // Если запрос выполнен без ошибок, таблица существует, поэтому мы ее не создаем
+            logger.error("Таблица REPORT уже существует.");
         } catch (SQLException e) {
-            logger.error("БД Активности не создано", e);
+            // Если возникла ошибка, значит таблицы не существует, ее нужно создать
+            logger.error("Таблица REPORT не существует, и будет создана");
+
+
+            Connection conn = null;
+            try {
+                conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+
+            Statement stmt = conn.createStatement();
+                stmt.execute("CREATE TABLE IF NOT EXISTS report (ID INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "telegramName VARCHAR(255), userID BIGINT,respose VARCHAR(255), idSlide INT, RATING INT, QUESTION VARCHAR(255))");
+                populateDatabase(10);
+            }
+            catch (SQLException ex) {
+                logger.error("Не удалось создать Таблицу REPORT");
+            }
+
         }
     }
 
@@ -41,6 +59,9 @@ public class ReportDAO {
             statement.setInt(5, report.getRating());
             statement.setString(6, report.getQuestion());
             statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -62,6 +83,9 @@ public class ReportDAO {
                     );
                 }
             }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -85,7 +109,7 @@ public class ReportDAO {
                 ));
             }
         } catch (SQLException e) {
-
+            logger.info("Ошибка чтения из Таблицы REPORT");
         }
         return reports;
     }
@@ -103,6 +127,9 @@ public class ReportDAO {
             statement.setString(6, report.getQuestion());
             statement.setLong(2, report.getuserID());//????
             statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

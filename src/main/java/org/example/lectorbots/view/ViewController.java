@@ -14,11 +14,11 @@ public class ViewController {
     private ViewVisitors viewVisitors;
     private ViewChannels viewChannels;
     private ViewActivities viewActivities;
-
+    private AdminBot bot;
     ReportDAO database;
     public ViewController() {
         ManagerBot managerBot =new ManagerBot();
-        AdminBot bot= (AdminBot) managerBot.getBot();
+        bot= (AdminBot) managerBot.getBot();
 
         //загрузка слайдов из стандартного пути
         viewSlades = new ViewSlades(bot);
@@ -42,6 +42,10 @@ public class ViewController {
 
     public TabPane getTabPane() {
         return tabPane;
+    }
+
+    public void stopBot(){
+
     }
 
 
