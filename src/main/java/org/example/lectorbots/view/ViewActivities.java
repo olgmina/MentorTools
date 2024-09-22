@@ -25,6 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/** представление обратной связи от слушателей
+ * в виде таблицы вопросов, ответов и пр.
+ */
 public class ViewActivities {
     private static final Logger log = LoggerFactory.getLogger(ViewActivities.class);
     private TableView<Report> tableView;
@@ -67,7 +70,7 @@ public class ViewActivities {
 
 
 
-        // Создаем поля с кнопками фильтрации
+        // Создаем поля с кнопками фильтрации данных
         TextField telegramNameFilter = new TextField();
         Button telegramNameFilterButton = new Button("Filter");
         telegramNameFilterButton.setOnAction(e -> filterByTelegramName(telegramNameFilter.getText()));

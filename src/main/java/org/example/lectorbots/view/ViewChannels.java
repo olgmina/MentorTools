@@ -17,6 +17,14 @@ import java.util.Random;
 
 import static org.apache.poi.poifs.crypt.CryptoFunctions.generateKey;
 
+/*** предполагается управление подпиской !!!(не смогла создать таблицы в программе)
+ * - генерация ключей
+ * - вход по ключу для подтверждения регистрации
+ * - создание таблицы Слушатель - вид подписки
+ * КОНЦЕПЦИЯ ПОДПИСКИ как управление правами на получение информации от лектора и отправки вопросов,
+ * сортировки ответов
+ */
+
 public class ViewChannels {
     private TableView subscribeTable=new TableView<>();
     private TableColumn<Subscribe, Integer> subscribeIdColumn;

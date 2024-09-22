@@ -1,5 +1,8 @@
 package org.example.lectorbots.activities;
 
+/** модель ответа для будущих сложных тестов
+ *
+ */
 public class Answer  {
     String answer;
     // другие параметры

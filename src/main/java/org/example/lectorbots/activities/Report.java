@@ -4,6 +4,9 @@ import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 
+/*** модель ответов пользователя
+ *
+ */
 public class Report {
     private String telegramName;
     private SimpleLongProperty userID;

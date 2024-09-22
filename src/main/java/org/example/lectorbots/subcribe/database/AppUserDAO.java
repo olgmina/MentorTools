@@ -127,7 +127,7 @@ public class AppUserDAO implements IAppUserDAO {
                 }
                 st.close();
             } finally {
-                connection.close();
+          //      connection.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,7 +146,7 @@ public class AppUserDAO implements IAppUserDAO {
                 rs.close();
                 stmt.close();
             } finally {
-                connection.close();
+          //      connection.close();
             }
         } catch (Exception e) {
             e.printStackTrace();

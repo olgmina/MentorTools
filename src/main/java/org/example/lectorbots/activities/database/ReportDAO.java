@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/*** управление БД ответотов пользователей
+ * легковесная БД h2 создается, если уже создана, то с ней ведется работа CRUD
+ */
 public class ReportDAO {
     private static final String JDBC_URL = "jdbc:h2:file:/src/main/resources/datasource/activity"; // Замените на URL вашей БД H2
     private static final String USERNAME = "admin"; // Замените на имя пользователя вашей БД H2

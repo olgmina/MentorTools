@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/** панель управления списком слушателей,
+ * предварительно загруженных из файла в БД
+ * и из БД в таблицу
+ */
 
 public class ViewVisitors {
     private VBox formVBox; //форма
@@ -46,7 +50,7 @@ public class ViewVisitors {
 
         // Создаем колонки таблицы
         TableColumn<AppUser, Long> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getId()).asObject());
 
         TableColumn<AppUser, Long> telegramUserIdColumn = new TableColumn<>("Telegram User ID");
         telegramUserIdColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getTelegramUserId()).asObject());
@@ -74,7 +78,8 @@ public class ViewVisitors {
         Button saveButton = new Button("Сохранить данные");
         saveButton.setOnAction(e->{
             AppUser user = new AppUser(userName.getText(),"", userSurname.getText());
-            items.add(user);
+            database.updateUser(user);
+            items.addAll(database.getAllSubscribers());
         });
         Button deleteButton = new Button("Удалить пользователя");
 
@@ -90,7 +95,7 @@ public class ViewVisitors {
         mainVBox.setPadding(new Insets(10));
         mainVBox.getChildren().addAll(userTable, formVBox);
     }
-    // Замените этот метод на ваш метод получения списка AppUser
+    // Заменить этот метод на свой вариант получения списка AppUser
     private List<AppUser> getListOfAppUsers() {
         if(!database.getAllSubscribers().isEmpty())
           return database.getAllSubscribers();

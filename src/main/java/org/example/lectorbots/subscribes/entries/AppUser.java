@@ -40,6 +40,10 @@ public class AppUser {
         subscribe = sub;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Long getTelegramUserId() {
         return telegramUserId;
     }

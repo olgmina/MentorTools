@@ -5,6 +5,9 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+/** предполалагалась фабрика для создания разных ботов
+ * и переключения между ними для различных задач
+ */
 public class ManagerBot {
     private TelegramLongPollingBot bot = null;
     private String botToken="6165348160:AAHXc_ZzpxyAPLfgH9gfZnKS8BVlYihJlaU";

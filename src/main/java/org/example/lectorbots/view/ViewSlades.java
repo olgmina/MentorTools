@@ -37,14 +37,20 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/*** представление панели управления слайдами
+ *
+ */
 
 public class ViewSlades {
 
     private static final int THUMBNAIL_SIZE = 100;
-
-
-
+    /*** карандаш для рисования на слайде
+     *
+     */
     private MPoint curpen=null;
+    /** навигация по слайдам презентации
+     *
+     */
     private Iterator imgIter=null;
     private PPTXBuilder pptxBuild=null;
 
@@ -137,6 +143,7 @@ public class ViewSlades {
             currentSlideView.setCursor(Cursor.DEFAULT);
             if(curpen!=null) {
                 curpen = null;
+                review();
 
             }
 
@@ -149,9 +156,13 @@ public class ViewSlades {
 
         root.setTop(toolbar);
 
-        root.setAlignment(currentSlideView, Pos.TOP_LEFT);
-        root.setMargin(currentSlideView, new Insets(5,5,5,5));
-        root.setCenter(currentSlideView);
+        //root.setAlignment(currentSlideView, Pos.TOP_LEFT);
+        Pane pane=new Pane();
+        pane.getChildren().add(currentSlideView);
+        pane.autosize();
+        root.setMargin(pane, new Insets(2,2,2,2));
+        root.setCenter(pane);
+
 
         root.setAlignment(chatArea, Pos.TOP_LEFT);
         root.setMargin(chatArea, new Insets(5,5,5,5));
@@ -214,8 +225,7 @@ public class ViewSlades {
         nextSlideImageView.setFitHeight(THUMBNAIL_SIZE);
         // nextSlideImageView.setPreserveRatio(true);
 
-        senderBot.setImage(currentSlideView.snapshot(new SnapshotParameters(), null));//иммено изображение, так как слайд может быть изменен
-        senderBot.setCaption(pptxBuild.toCaption(slide));
+       review();
 
         notesArea.setText( pptxBuild.toText(slide));
 
@@ -224,6 +234,12 @@ public class ViewSlades {
 
     public Pane viewpanel(){
         return root;
+    }
+
+    private void review(){
+        senderBot.setImage(currentSlideView.snapshot(new SnapshotParameters(), null));//иммено изображение, так как слайд может быть изменен
+        senderBot.setCaption(pptxBuild.toCaption(imgIter.getSlide(imgIter.getCurrent())));
+
     }
 
     private Pane createToolbar(){

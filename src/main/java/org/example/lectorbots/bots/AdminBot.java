@@ -27,6 +27,10 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*** управление ботом
+ * отправка фото
+ * получение ответов пользователей и запись в БД
+ */
 public class AdminBot extends TelegramLongPollingBot {
     private String botToken;
     private String botUsername;
