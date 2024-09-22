@@ -10,8 +10,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  */
 public class ManagerBot {
     private TelegramLongPollingBot bot = null;
-    private String botToken="6165348160:AAHXc_ZzpxyAPLfgH9gfZnKS8BVlYihJlaU";
-    private String botUsername="LectionSWQuestionBot";
+    private String botToken="111";
+    private String botUsername="1nBot";
 
     public ManagerBot()  {
         bot=new AdminBot(botToken, botUsername);
