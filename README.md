@@ -17,9 +17,14 @@
  
 Плагин для IntellejIdea для интерактивного построения программного проекта, реализующего архитектуру "Каналы и Фильтры" с пассивными фильтрами на паттерне Декоратор.
 
-## Шаблоны спецификаций ПО
+## Программные системы мониторинга репозиториев программных проектов
+ 
+[Программа мониторинга студенческих проектов](https://github.com/apps/learntrackchecker) [автор_репо](https://github.com/GoodieCore/LearnTrackApp) [fork](https://gitverse.ru/olgMina/learntrack-server)
+Система предназначена для автоматического отслеживания активности работы студентов по их репо с гибкой настройкой критериев\фильтров проверок
 
-Документы для создания описаний программных артефактов
+## Шаблоны документации программных проектов, продуктов
+
+Документы для создания описаний программных артефактов: [описание проекта](https://github.com/olgmina/open-source-project-template), [архитектурная спецификация](https://github.com/olgmina/architecture-document-template], [спецификация ПО](https://github.com/olgmina/SWEngineering-technics.github.io/blob/gh-pages/0_Requierements/Techniques/templates/specification.md), [техническое задание](https://github.com/olgmina/SWEngineering-technics.github.io/blob/gh-pages/0_Requierements/Techniques/templates/techtask.md), [концепция программного продукта\проекта]([https://github.com/olgmina/SWEngineering-technics.github.io/blob/gh-pages/0_Requierements/Techniques/templates/techtask.md](https://github.com/olgmina/SWEngineering-technics.github.io/blob/gh-pages/0_Requierements/Techniques/templates/concept.md)), [описание API](https://github.com/olgmina/SWEngineering-technics.github.io/blob/gh-pages/9_Docs%26Managment/Techniques/descriptorAPI.md), [контрольный пример](https://github.com/olgmina/SWEngineering-technics.github.io/blob/gh-pages/4_Testing/templates/test_case.md)
 
 ## [Политика подготовки отчетов (пояснительных записок) по программным проектам](https://github.com/mdobrynina/md-to-word)
 
